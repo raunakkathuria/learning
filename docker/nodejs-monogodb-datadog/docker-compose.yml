@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  datadog:
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_AGENT_HOST=datadog
+      - DD_HEALTH_PORT=5555
+    networks:
+      - monitoring_service_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_INITDB_DATABASE=demodb
+    networks:
+      - monitoring_service_net
+    volumes:
+      - mongodb_data:/data/db
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    command: --quiet
+
+  app:
+    image: demo_node:latest
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - monitoring_service_net
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=3000
+      - DD_AGENT_HOST=datadog
+    depends_on:
+      - mongo
+      - datadog
+    command:
+      sh -c '/usr/wait-for-it.sh --timeout=0 datadog:5555 && /usr/wait-for-it.sh --timeout=0 mongo:27017 && npm i && node index.js'
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  mongodb_data:
+
+networks:
+  monitoring_service_net:

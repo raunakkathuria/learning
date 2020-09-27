@@ -1,0 +1,17 @@
+{
+  "name": "temp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raunak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.17.1",
+    "express-useragent": "1.0.15",
+    "hot-shots": "8.1.0",
+    "mongoose": "5.10.7"
+  }
+}
