@@ -9,7 +9,7 @@ services:
       - DD_AGENT_HOST=datadog
       - DD_HEALTH_PORT=5555
     networks:
-      - monitoring_service_net
+      - demo_network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro
@@ -27,7 +27,7 @@ services:
       - MONGO_DATA_DIR=/data/db
       - MONGO_INITDB_DATABASE=demodb
     networks:
-      - monitoring_service_net
+      - demo_network
     volumes:
       - mongodb_data:/data/db
     deploy:
@@ -41,7 +41,7 @@ services:
     volumes:
       - ./:/usr/src/app
     networks:
-      - monitoring_service_net
+      - demo_network
     ports:
       - 3000:3000
     environment:
@@ -61,4 +61,4 @@ volumes:
   mongodb_data:
 
 networks:
-  monitoring_service_net:
+  demo_network:

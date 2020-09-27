@@ -15,7 +15,7 @@ const dogstatsd = new StatsD({
 
 mongoose
   .connect(
-    'mongodb://mongo:27017/vpnmonitoring', {
+    'mongodb://mongo:27017/demodb', {
     useUnifiedTopology: true,
     useNewUrlParser: true
   })
