@@ -12,8 +12,8 @@ This project includes a `Dockerfile` and `docker-compose.yml` for containerizati
 ## Setup
 
 ```shell
-$ git clone
-$ cd
+$ git clone git@github.com:raunakkathuria/learning.git
+$ cd nodejs-pgbouncer-postgres
 ```
 
 ### Environment variables
@@ -46,6 +46,13 @@ $ curl 0.0.0.0:4000/api/time
 ## API Endpoints
 
 - `GET /api/time` - Returns the current time from the PostgreSQL database.
+
+## Note
+
+- This project uses [edoburu/docker-pgbouncer](https://github.com/edoburu/docker-pgbouncer) for PgBouncer container.This module defaults to md5 for password authentication whereas postgres 14+ uses `scram-sha-256` by default.
+- You can use `POSTGRES_HOST_AUTH_METHOD` environment varialble to make postgres use `md5` - [official postgres container](https://hub.docker.com/_/postgres).
+- In this example, we are using `AUTH_MODE` as `trust` for `pgbouncer`, and `userlist.txt` uses a plain password.
+- You can use [generate userlist](https://github.com/edoburu/docker-pgbouncer/blob/299d2d4bae1d82dc1fe94834e3a1ada275574527/examples/generate-userlist#L1) to generate md5 based userlist file
 
 ## License
 
