@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    container_name: database
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    ports:
+      - ${PGBOUNCER_PORT}:${PGBOUNCER_PORT}
+    networks:
+      - backend
+    container_name: pgbouncer
+    volumes:
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt:ro
+
+  nodeapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/app/src
+      - ./nodemon.json:/home/node/app/nodemon.json
+    depends_on:
+      - pgbouncer
+    env_file:
+      - .env
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    container_name: app
+    networks:
+      - backend
+    command: npm run start
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
